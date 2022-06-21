@@ -16,9 +16,12 @@ use App\Models\Client;
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+/*test*/
 
 Route::get('/portailCaptive', function () {
     return view("portail_captive");
