@@ -21,7 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-/*test*/
+/*tesStdddfdfdft*/
 
 Route::get('/portailCaptive', function () {
     return view("portail_captive");
