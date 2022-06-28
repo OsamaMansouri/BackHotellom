@@ -46,6 +46,11 @@ Route::get('/portail', function () {
     return view("portail", compact('hotel'));
 });
 
+Route::get('/test',function(){
+    return view("emails.UserHasRegistredMail");
+});
+
+
 Route::get('/hotellom/form', function () {
     return view("hotellom");
 })->name('addHotellom');
