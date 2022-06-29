@@ -100,7 +100,7 @@
 															<td
 																style="padding-left:25px;padding-top:15px;width:100%;padding-right:0px;padding-bottom:5px;">
 																<div style="line-height:10px"><img alt="Alternate text"
-																		src="images/HOTELLOM_LOGO_V2.png"
+																		src="https://api.hotellom.com/img/emails/HOTELLOM_LOGO_V2.png"
 																		style="display: block; height: auto; border: 0; width: 180px; max-width: 100%;"
 																		title="Alternate text" width="180" /></div>
 															</td>
@@ -211,7 +211,7 @@
 																style="padding-right:5px;width:100%;padding-left:0px;padding-top:5px;padding-bottom:5px;">
 																<div align="center" style="line-height:10px"><img
 																		alt="Alternate text" class="big"
-																		src="images/first_imag.png"
+																		src="https://api.hotellom.com/img/emails/first_imag.png"
 																		style="display: block; height: auto; border: 0; width: 355px; max-width: 100%;"
 																		title="Alternate text" width="355" /></div>
 															</td>
@@ -317,7 +317,7 @@
 																				href="https://www.facebook.com/"
 																				target="_blank"><img alt="Facebook"
 																					height="32"
-																					src="images/facebook2x.png"
+																					src="https://api.hotellom.com/img/emails/facebook2x.png"
 																					style="display: block; height: auto; border: 0;"
 																					title="Facebook" width="32" /></a>
 																		</td>
@@ -325,7 +325,7 @@
 																				href="https://twitter.com/"
 																				target="_blank"><img alt="Twitter"
 																					height="32"
-																					src="images/twitter2x.png"
+																					src="https://api.hotellom.com/img/emails/twitter2x.png"
 																					style="display: block; height: auto; border: 0;"
 																					title="Twitter" width="32" /></a>
 																		</td>
@@ -333,7 +333,7 @@
 																				href="https://instagram.com/"
 																				target="_blank"><img alt="Instagram"
 																					height="32"
-																					src="images/instagram2x.png"
+																					src="https://api.hotellom.com/img/emails/instagram2x.png"
 																					style="display: block; height: auto; border: 0;"
 																					title="Instagram" width="32" /></a>
 																		</td>
@@ -341,7 +341,7 @@
 																				href="https://www.linkedin.com/"
 																				target="_blank"><img alt="LinkedIn"
 																					height="32"
-																					src="images/linkedin2x.png"
+																					src="https://api.hotellom.com/img/emails/linkedin2x.png"
 																					style="display: block; height: auto; border: 0;"
 																					title="LinkedIn" width="32" /></a>
 																		</td>
@@ -362,7 +362,7 @@
 															<td
 																style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;width:100%;">
 																<div style="line-height:10px"><img alt="Alternate text"
-																		src="images/Google_Play_Badge_US.png"
+																		src="https://api.hotellom.com/img/emails/Google_Play_Badge_US.png"
 																		style="display: block; height: auto; border: 0; width: 96px; max-width: 100%;"
 																		title="Alternate text" width="96" /></div>
 															</td>
@@ -376,7 +376,7 @@
 															<td
 																style="padding-bottom:15px;padding-left:10px;padding-right:10px;padding-top:15px;width:100%;">
 																<div style="line-height:10px"><img alt="Alternate text"
-																		src="images/App_Store_Badge_US_Black.png"
+																		src="https://api.hotellom.com/img/emails/App_Store_Badge_US_Black.png"
 																		style="display: block; height: auto; border: 0; width: 96px; max-width: 100%;"
 																		title="Alternate text" width="96" /></div>
 															</td>
