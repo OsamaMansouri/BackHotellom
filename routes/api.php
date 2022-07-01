@@ -61,7 +61,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('loginStandar', [AuthController::class, 'loginStandar']);
 Route::post('payment',  [PaymentController::class, 'payment'])->name('payment');
 Route::post('registerHotel',  [UserController::class, 'registerHotel'])->name('registerHotel');
-
+Route::delete('users/{id}',  [UserController::class, 'destroy']);
 // Reset Password
 Route::get('/reset-password', [BaseController::class, 'sendLink'])->name('sendLink');
 Route::get('/edit-password/{id}', [BaseController::class, 'editPassword'])->name('editPassword');

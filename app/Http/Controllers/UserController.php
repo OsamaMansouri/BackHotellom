@@ -353,6 +353,7 @@ class UserController extends BaseController
     {
 
         $user = User::find($id);
+
         // $user->del = 1;
         // $user->save();
         // //$this->userRepository->deleteUser($id);
