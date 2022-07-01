@@ -353,10 +353,14 @@ class UserController extends BaseController
     {
 
         $user = User::find($id);
-        $user->del = 1;
-        $user->save();
-        //$this->userRepository->deleteUser($id);
-        return \response(null, Response::HTTP_NO_CONTENT);
+        if($user)
+        {
+            $user->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'user Deleted Successfully',
+            ]);
+        }
     }
 
     /**
