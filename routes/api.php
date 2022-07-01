@@ -101,6 +101,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('users/resetPassword', [UserController::class, 'resetPassStaff']);
     Route::get('users/managers', [UserController::class, 'getHotellomManagers']);
     Route::post('manager/add', [UserController::class, 'addManager']);
+    Route::delete('users/{id}',[UserController::class,'destroy']);
 
 
     Route::put('linkUserWithHotel', [UserController::class , 'linkUserWithHotel']);
