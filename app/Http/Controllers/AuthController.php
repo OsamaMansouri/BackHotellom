@@ -253,7 +253,7 @@ class AuthController extends BaseController
         // If User Login Successfully
         $user = User::with('modelHasRole.role')
                         ->whereHas('modelHasRole.role', function($q){
-                                $q->where('name', Role::ROOMS_SERVANT)->orWhere('name', Role::RECEPTIONIST);
+                                $q->where('name', Role::ROOMS_SERVANT)->orWhere('name', Role::RECEPTIONIST)->orWhere('name', Role::HOUSEKEEPING)->orWhere('name', Role::MANAGER);
                             })
                         ->where('email', $request->email)
                         ->first();
