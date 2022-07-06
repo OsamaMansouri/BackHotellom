@@ -100,7 +100,7 @@
 															<td
 																style="padding-left:25px;padding-top:15px;width:100%;padding-right:0px;padding-bottom:5px;">
 																<div style="line-height:10px"><img alt="Alternate text"
-																		src="images/HOTELLOM_LOGO_V2.png"
+																		src="https://api.hotellom.com/img/emails/HOTELLOM_LOGO_V2.png"
 																		style="display: block; height: auto; border: 0; width: 180px; max-width: 100%;"
 																		title="Alternate text" width="180" /></div>
 															</td>
