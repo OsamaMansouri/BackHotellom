@@ -26,10 +26,14 @@ use \App\Http\Controllers\CommissionController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\DemmandController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\BlockController;
 use App\Http\Controllers\DemmandUserController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -133,5 +137,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('messages', MessageController::class);
     Route::apiResource('conversations', ConversationController::class);
     Route::apiResource('calls', CallController::class);
+
+    Route::post('block',[BlockController::class, 'checkblock']);
 });
 

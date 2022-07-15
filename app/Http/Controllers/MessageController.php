@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Block;
 use Symfony\Component\HttpFoundation\Response;
 
 class MessageController extends Controller
@@ -18,11 +19,27 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $sender_user = (int)Auth::user()->id;
+        $receiver_id = $request->hotel_id;
+
+
+        $block1 = Block::where('user_id',$sender_user)
+        ->where('hotel_id',$receiver_id)
+        ->first();
+
+        $block2 = Block::where('user_id',$receiver_id)
+        ->where('hotel_id',$sender_user)
+        ->first();
+
         $user = Auth::user();
-        $messages = Message::with(['user', 'demmand'])->where('user_id',$user->id)->where('hotel_id', $user->hotel_id)->orderBy('id', 'DESC')->paginate(50);
-        return MessageResource::collection($messages);
+        $messages = Message::with(['user', 'demmand'])->where('user_id',$user->id)->where('hotel_id', $user->hotel_id)->orderBy('id', 'DESC')->get();
+        return [
+            'data'=> MessageResource::collection($messages),
+            'block1' => $block1,
+            'block2' => $block2
+        ];
     }
 
     /**
