@@ -4,9 +4,15 @@ namespace App\Http\Resources;
 
 use App\Models\Demmand;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Block;
+use Illuminate\Support\Facades\Auth;
 
 class MessageResource extends JsonResource
 {
+
+
+
+
     /**
      * Transform the resource into an array.
      *
@@ -15,6 +21,8 @@ class MessageResource extends JsonResource
      */
     public function toArray($request)
     {
+
+
         return [
             'id'        => $this->id,
             'content'      => $this->content,
