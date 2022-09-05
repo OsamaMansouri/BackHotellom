@@ -101,3 +101,5 @@ Route::post('/hotellom/form', [ClientController::class, 'store'])->name('hotello
 Route::get('qrCode', [BaseController::class, 'getRoomByQrCode']);
 Route::get('apkQrCode', [BaseController::class, 'getApkURL']);
 Route::get('hotelDetails', [BaseController::class, 'getHotelDetailsByQrCode']);
+Route::get('/viewqr', function () {
+    return view("viewqr");});
