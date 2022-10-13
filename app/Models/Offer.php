@@ -38,6 +38,12 @@ class Offer extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
+    
+    protected $with =['user'];
+    public function user()
+    {
+        return $this->belongsTo(User::class,'hotel_id','id');
+    }
 
     public function type()
     {

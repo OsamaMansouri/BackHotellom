@@ -436,6 +436,7 @@ class UserController extends BaseController
         $user->name = $request['name'];
         $user->email = $request['email'];
         $user->etat = $request['etat'];
+        $user->password = $request['password'] = bcrypt($user->password);;
         $user->save();
         ModelHasRole::where('model_id',$request['user_id'])->delete();
         ModelHasRole::create(['model_id' => $user->id, 'role_id' => $role, 'model_type' => 'App\Models\User']);

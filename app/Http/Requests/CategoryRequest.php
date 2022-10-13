@@ -25,6 +25,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'hotel_id' => 'required',
+            'shop_id'  => 'required',
             'name'  =>  'required|max:255',
             'icon'  =>  'required',
             'startTime'     => 'required',
@@ -44,6 +45,7 @@ class CategoryRequest extends FormRequest
         return [
             'hotel_id.required' => 'hotel is required',
             'name.required'  =>  'name is required',
+            'shop_id.required' => 'shop is required',
             'icon.required'  =>  'icon is required',
             'startTime.required'     => 'Start time is required',
             'endTime.required'      => 'End time is required',

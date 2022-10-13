@@ -26,8 +26,8 @@ class ArticleRequest extends FormRequest
         return [
             'category_id' => 'required',
             'name' => 'required|max:255',
-            'image' => 'required',
-            'description' => 'required|max:250',
+            //'image' => 'required',
+            //'description' => 'required|max:250',
             'price' => 'required|numeric',
             'cost' => 'numeric',
             'profit' => 'numeric'
@@ -44,8 +44,8 @@ class ArticleRequest extends FormRequest
         return [
             'name.required'  =>  'Name is required',
             'category_id.required'  =>  'category_id is required',
-            'image.required'  =>  'Image is required',
-            'description.required'     => 'Description is required',
+            //'image.required'  =>  'Image is required',
+            //'description.required'     => 'Description is required',
             'price.required' => 'Price is required'
         ];
     }

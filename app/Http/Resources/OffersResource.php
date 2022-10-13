@@ -44,6 +44,8 @@ class OffersResource extends JsonResource
             'orders' => $this->orders,
             //'hotel' => HotelResource::make($this->hotel),
             'type' => TypeResource::make($this->type),
+            'hotel' => $this->hotel,
+            'user' => $this->user
         ];
     }
 }
