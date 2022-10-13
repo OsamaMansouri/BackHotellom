@@ -29,6 +29,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\DemmandUserController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\RequestHotelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -133,6 +134,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('commands', CommandController::class);
     Route::apiResource('commissions', CommissionController::class);
     Route::apiResource('demmands', DemmandController::class);
+    Route::apiResource('request_hotel', RequestHotelController::class);
     Route::apiResource('demmandUsers', DemmandUserController::class);
     Route::apiResource('messages', MessageController::class);
     Route::apiResource('conversations', ConversationController::class);

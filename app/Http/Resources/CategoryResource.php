@@ -18,6 +18,7 @@ class CategoryResource extends JsonResource
         return [
             'id'        => $this->id,
             'hotel_id'  => $this->hotel_id,
+            'shop_id'   => $this->shop_id,
             'name'      => $this->name,
             'icon'      => Storage::url($this->icon),
             //'icon'      => asset('storage/'.$this->icon),

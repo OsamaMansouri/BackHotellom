@@ -48,7 +48,7 @@ class CategoryRepository
         $imageName = 'categories/'.Str::random('30').'_'.uniqid().'.png';
         Storage::disk('ftp')->put($imageName, $data);
         return  Category::create(
-            $request->only('hotel_id', 'name', 'startTime', 'endTime', 'Sequence')
+            $request->only('hotel_id', 'shop_id', 'name', 'startTime', 'endTime', 'Sequence')
             + ['icon' => $imageName]
         );
     }
@@ -81,7 +81,7 @@ class CategoryRepository
             $filenametostore = 'categories/'. $filename.'_'.uniqid().'.'.$extension;
             Storage::disk('ftp')->put($filenametostore, fopen($request->file('icon'), 'r+'));
         }
-        $category->update($request->only('name','startTime','endTime','Sequence')
+        $category->update($request->only('name','shop_id','startTime','endTime','Sequence')
             + ['icon' => $filenametostore]
         );
         return $category;

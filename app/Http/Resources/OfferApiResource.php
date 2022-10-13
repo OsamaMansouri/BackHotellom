@@ -21,7 +21,9 @@ class OfferApiResource extends JsonResource
             'prix' => $this->prix,
             'discount' => $this->discount,
             'prixFinal' => $this->prixFinal,
-            'orders' => $this->orders
+            'orders' => $this->orders,
+            'hotel' => $this->hotel,
+            'user' => $this->user
         ];
     }
 }

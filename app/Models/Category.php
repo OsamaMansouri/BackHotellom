@@ -15,6 +15,7 @@ class Category extends Model
      */
     protected $fillable = [
         'hotel_id',
+        'shop_id',
         'name',
         'icon',
         'startTime',
