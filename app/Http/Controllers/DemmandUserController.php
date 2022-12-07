@@ -22,7 +22,12 @@ class DemmandUserController extends Controller
     public function index(Request $request)
     {
         $hotel_id = Auth::user()->hotel_id;
-        $demmandUsers = DemmandUser::with('demmand')->whereHas('demmand')->join('demmands','demmands.id','=','demmand_users.demmand_id')->join('request_hotels','request_hotels.demmand_id','=','demmands.id')->where('request_hotels.hotel_id',$hotel_id)->orderBy('demmand_users.id', 'DESC');
+        $demmandUsers = DemmandUser::with('demmand')
+                        ->whereHas('demmand')
+                        ->join('demmands','demmands.id','=','demmand_users.demmand_id')
+                        ->join('request_hotels','request_hotels.demmand_id','=','demmands.id')
+                        ->where('request_hotels.hotel_id',$hotel_id)
+                        ->orderBy('demmand_users.id', 'DESC');
 
         if($request->query('web')){
             return DemmandUserResource::collection($demmandUsers->get());

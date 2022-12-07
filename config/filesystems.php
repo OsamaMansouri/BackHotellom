@@ -129,12 +129,12 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
         public_path('public/storage') => storage_path('storage/app/public'),
-        /* public_path('img/categories') => storage_path('storage/app/public/categories'),
+        public_path('img/categories') => storage_path('storage/app/public/categories'),
         public_path('img/articles') => storage_path('storage/app/public/articles'),
         public_path('img/offers') => storage_path('storage/app/public/offers'),
         public_path('img/settings') => storage_path('storage/app/public/settings'),
         public_path('img/shops') => storage_path('storage/app/public/shops'),
-        public_path('img/types') => storage_path('storage/app/public/types'), */
+        public_path('img/types') => storage_path('storage/app/public/types'),
     ],
 
 ];
