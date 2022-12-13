@@ -63,11 +63,11 @@ class CommandOfferController extends Controller
         $offers = CommandOffer::with('offer')->Where('user_id', $user_id)->whereHas('offer', function($q) use($hotel_id) {
             $q->where('hotel_id', $hotel_id);
         });
-        if($request->query('web')){
-            return CommandOfferResource::collection($offers->get());
-        }else{
-            return CommandOfferResource::collection($offers->paginate());
-        }
+
+        return CommandOfferResource::collection($offers->get());
+
+
+
     }
 
 }

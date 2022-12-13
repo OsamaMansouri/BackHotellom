@@ -20,7 +20,7 @@ class RequestHotelResource extends JsonResource
             'hotel_id'      => $this->hotel_id,
             'demmand_id'  => $this->demmand_id,
             'hotel_id'         => $this->hotel_id,
-            'demmand' => $this->demmand
+            'demmand' => new DemmandResource($this->demmand)
         ];
     }
 }

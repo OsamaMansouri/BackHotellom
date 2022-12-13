@@ -52,7 +52,7 @@ class ArticleRepository
      * @param int $category_id The category id
      */
     public function getArticlesByCategory($category_id){
-        return Article::where('category_id', $category_id)->paginate(50);
+        return Article::where('category_id', $category_id)->get();
     }
 
 

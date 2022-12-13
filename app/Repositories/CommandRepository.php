@@ -39,11 +39,9 @@ class CommandRepository
         }
         $commands->orderBy('id', 'desc');
 
-        if($request->query('web')){
-            return $commands->get();
-        }else{
-            return $commands->paginate();
-        }
+        return $commands->get();
+
+
     }
 
     /**
