@@ -91,7 +91,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('getStatistiques', [BaseController::class, 'getStatistiques']);
     Route::get('salesChart', [CommandController::class, 'salesChart']);
     Route::get('salesChartLastWeek', [CommandController::class, 'salesChartLastWeek']);
-    Route::get('getRoomsByHotel', [RoomController::class, 'getRoomsByHotel']);
+    Route::get('getRoomsByHotel/{id}', [RoomController::class, 'getRoomsByHotel']);
     Route::get('getLicenseByHotel', [LicenceController::class, 'getLicenseByHotel']);
     Route::get('commands/getData/{id}', [CommandController::class, 'getAllCommandeData']);
     Route::get('getArticlesByCat/{id}', [ArticleController::class, 'getArticlesByCategory']);

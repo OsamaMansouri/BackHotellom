@@ -72,15 +72,15 @@ class RoomRepository
     /**
      * Display the list rooms by hotel
      */
-    public function getRoomsByHotel($request){
+    public function getRoomsByHotel($request,$id){
         $data = $request->all();
         //$hotel_id = isset($data['hotel_id']) ? $data['hotel_id'] : false;
         $hotel_id = Auth::user()->hotel_id;
 
         if($request->query('web')){
-            $rooms = Room::where('hotel_id', $hotel_id)->where('del', 0)->get();
+            $rooms = Room::where('hotel_id', $id)->where('del', 0)->get();
         }else{
-            $rooms = Room::where('hotel_id', $hotel_id)->where('del', 0)->paginate();
+            $rooms = Room::where('hotel_id', $id)->where('del', 0)->paginate();
         }
         return $rooms;
 
