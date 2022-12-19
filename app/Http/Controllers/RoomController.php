@@ -206,9 +206,9 @@ class RoomController extends Controller
      *  ]
      *}
      */
-    public function getRoomsByHotel(Request $request)
+    public function getRoomsByHotel(Request $request,$id)
     {
-        $rooms = $this->roomRepository->getRoomsByHotel($request);
+        $rooms = $this->roomRepository->getRoomsByHotel($request,$id);
         return RoomResource::collection($rooms);
 
     }
