@@ -219,8 +219,9 @@ class UserController extends BaseController
                         $room = $this->roomRepository->addRoom($roomData);
 
                         if($room){
-                            $file = QrCode::format('png')->size(399)->color(40, 40, 40)->generate("http://appweb.hotellom.com/$hotel->id/$room->id");
-                            $imageName = 'rooms/room-' . $room['number'] . $room['qrcode'] . '.png';
+
+                            $file = QrCode::format('png')->size(399)->color(40, 40, 40)->generate("https://appweb.hotellom.com/$hotel->id/$room->id");
+                            $imageName = 'rooms/room-' .$room['room_number'] .$room['qrcode'] .'.png';
                             Storage::disk('ftp')->put($imageName, $file);
                         }
 
