@@ -100,6 +100,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('getApiSettings', [GeneralSettingsController::class, 'getApiSettings']);
     Route::get('messages/byConversation/{conversation_id}', [MessageController::class, 'getMessagesByConversation']);
     Route::get('getActiveHotelUsers/{role}', [UserController::class, 'getActiveHotelUsers']);
+    Route::post('add_room', [RoomController::class, 'addRommOneByOne']);
+    Route::post('edit_room', [RoomController::class, 'editRommOneByOne']);
 
     Route::post('staff/add', [UserController::class, 'addStaff']);
     Route::put('staff/update', [UserController::class, 'updateStaff']);
