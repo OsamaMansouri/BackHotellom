@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RoomRequest;
 use App\Http\Resources\RoomResource;
+use App\Models\Hotel;
 use App\Models\Room;
 use App\Repositories\RoomRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Symfony\Component\HttpFoundation\Response;
@@ -135,7 +137,7 @@ class RoomController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $room = $this->roomRepository->updateRoom($request,$id);
+        $room = $this->roomRepository->updateRoom($request, $id);
         return response(new RoomResource($room), Response::HTTP_CREATED);
     }
 
@@ -157,29 +159,29 @@ class RoomController extends Controller
      */
     public function destroy($id)
     {
-        //$this->roomRepository->deleteRoom($id);
-        $room = Room::find($id);
-        $room->del = 1;
-        $room->save();
-        return  \response(null, Response::HTTP_NO_CONTENT);
+        $this->roomRepository->deleteRoom($id);
+        // $room = Room::find($id);
+        // $room->del = 1;
+        // $room->save();
+        // return  \response(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function scanQrCode(Request $request){
+    public function scanQrCode(Request $request)
+    {
 
-        foreach ($request['rooms'] as $room){
+        foreach ($request['rooms'] as $room) {
 
-           $qrCode = QrCode::size(300)
+            $qrCode = QrCode::size(300)
                 ->format('png')
                 ->generate(Room::getRoomByQrCode($room['qrcode']));
 
 
-            $file_name = $room['qrcode'].'-'.$room['room_number'].'.'.'png';
-            Storage::disk('public')->put('/RoomsByQrCode/'.$file_name, $qrCode);
-            $url = asset(config('app.img_url').$file_name);
-            $result[] = ['room_number' => $room['id'] , 'qrCode' => $room['qrcode'],'url' =>$url];
+            $file_name = $room['qrcode'] . '-' . $room['room_number'] . '.' . 'png';
+            Storage::disk('public')->put('/RoomsByQrCode/' . $file_name, $qrCode);
+            $url = asset(config('app.img_url') . $file_name);
+            $result[] = ['room_number' => $room['id'], 'qrCode' => $room['qrcode'], 'url' => $url];
         }
         return response()->json($result);
-
     }
 
     /**
@@ -206,10 +208,42 @@ class RoomController extends Controller
      *  ]
      *}
      */
-    public function getRoomsByHotel(Request $request,$id)
+    public function getRoomsByHotel(Request $request, $id)
     {
-        $rooms = $this->roomRepository->getRoomsByHotel($request,$id);
+        $rooms = $this->roomRepository->getRoomsByHotel($request, $id);
         return RoomResource::collection($rooms);
+    }
+    public function addRommOneByOne(Request $request)
+    {
+        $hotel_id = $request->hotel_id;
+        $room_number = $request->room_number;
+        $qrcode = Room::newQrCode();
 
+        $roomData = [
+            'hotel_id'    => $hotel_id,
+            'room_number' => $room_number,
+            'qrcode'      => $qrcode
+        ];
+
+        $room = Room::create($roomData);
+        if ($room) {
+
+            $file = QrCode::format('png')->size(399)->color(40, 40, 40)->generate("https://appweb.hotellom.com/$hotel_id/$room->id");
+            $imageName = 'rooms/room-' . $room['room_number'] . $room['qrcode'] . '.png';
+            Storage::disk('ftp')->put($imageName, $file);
+        }
+
+
+        return  $room;
+    }
+
+
+    public function editRommOneByOne(Request $request)
+    {
+        $room_id = $request->room_id;
+
+        $room = Room::find($room_id);
+        $room->update($request->only('room_number'));
+        return $room;
     }
 }

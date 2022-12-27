@@ -66,7 +66,7 @@ class RoomRepository
      * @param int $id The room's id
      */
     public function deleteRoom($id){
-        Room::destroy($id);
+        return Room::destroy($id);
     }
 
     /**

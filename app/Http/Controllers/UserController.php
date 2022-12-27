@@ -144,7 +144,7 @@ class UserController extends BaseController
 
             if ($hotel) {
                 //Generate QR-Code For Hotel
-                $file = QrCode::format('png')->size(399)->color(40,40,40)->generate(Hotel::where('id', $hotel->id)->get(['id','name']));
+                $file = QrCode::format('png')->size(399)->color(40,40,40)->generate("https://appweb.hotellom.com/$hotel->id");
                 //$imageName = 'hotel-'. $hotel->reference .'.png';
                 //Storage::disk('hotels')->put($imageName, $file);
                 $imageName = 'hotels/hotel-'. $hotel->reference .'.png';
