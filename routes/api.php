@@ -109,6 +109,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('users/managers', [UserController::class, 'getHotellomManagers']);
     Route::post('manager/add', [UserController::class, 'addManager']);
     Route::delete('users/{id}',[UserController::class,'destroy']);
+    Route::get('categories_by_shop/{shop_id}',[CategoryController::class,'categories_by_shop']);
 
 
     Route::put('linkUserWithHotel', [UserController::class , 'linkUserWithHotel']);

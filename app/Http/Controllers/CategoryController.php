@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
@@ -239,5 +241,11 @@ class CategoryController extends Controller
     {
         $this->categoryRepository->deleteCategory($id);
         return \response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function categories_by_shop($shop_id)
+    {
+        $hotel_id = Auth::user()->hotel_id;
+        return Category::with('shop')->where('hotel_id', $hotel_id)->where('shop_id', $shop_id)->get();
     }
 }
