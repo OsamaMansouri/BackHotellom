@@ -27,6 +27,11 @@ class Category extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
+    protected $with = ['shop'];
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class,'shop_id','id');
+    }
 
     public function articles()
     {

@@ -25,9 +25,9 @@ class CategoryRepository
     public function getCategories($request){
         $hotel_id = Auth::user()->hotel_id;
         if($request->query('web')){
-            return Category::where('hotel_id', $hotel_id)->OrderBy('sequence','DESC')->get();
+            return Category::with('shop')->where('hotel_id', $hotel_id)->OrderBy('sequence','DESC')->get();
         } else {
-            return Category::where('hotel_id', $hotel_id)->OrderBy('sequence','ASC')->paginate(50);
+            return Category::with('shop')->where('hotel_id', $hotel_id)->OrderBy('sequence','ASC')->paginate(50);
         }
 
     }
