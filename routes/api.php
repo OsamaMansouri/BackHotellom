@@ -103,6 +103,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('add_room', [RoomController::class, 'addRommOneByOne']);
     Route::post('edit_room', [RoomController::class, 'editRommOneByOne']);
 
+    //Route::get('pdf',[UserController::class,'generatepdf']);
+
     Route::post('staff/add', [UserController::class, 'addStaff']);
     Route::put('staff/update', [UserController::class, 'updateStaff']);
     Route::put('users/resetPassword', [UserController::class, 'resetPassStaff']);
