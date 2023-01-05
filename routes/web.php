@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\UserController;
 use App\Models\Client;
 
 /*
@@ -95,6 +96,9 @@ Route::get('/vigon/{id}/delete', function ($id) {
     $clients = Client::where('type', 'vigon')->orderBy('id', 'DESC')->get();
     return view("listVigon", compact('clients'));
 });
+Route::get('pdfhotel/{code}/{ref}',[UserController::class,'generatepdf']);
+Route::get('pdfroom/{hotel_code}/{room_number}/{qrcode}',[UserController::class,'generatepdfroom']);
+
 Route::post('/hotellom/form/update/{id}', [ClientController::class, 'update'])->name('updateHotellom');
 Route::post('/hotellom/form', [ClientController::class, 'store'])->name('hotellom');
 
@@ -103,3 +107,4 @@ Route::get('apkQrCode', [BaseController::class, 'getApkURL']);
 Route::get('hotelDetails', [BaseController::class, 'getHotelDetailsByQrCode']);
 Route::get('/viewqr', function () {
     return view("viewqr");});
+

@@ -27,11 +27,15 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Events\StatistiqueUpdateEvent;
 use App\Http\Resources\UserApiResource;
+use App\Models\Option;
 use App\Models\Role;
 use App\Models\Type;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use PDF;
 
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +52,7 @@ class UserController extends BaseController
 
     private $roomRepository;
 
-    public function __construct(UserRepository $userRepository,HotelRepository $hotelRepository, RoomRepository $roomRepository, LicenceRepository $licenceRepository)
+    public function __construct(UserRepository $userRepository, HotelRepository $hotelRepository, RoomRepository $roomRepository, LicenceRepository $licenceRepository)
     {
         $this->userRepository   = $userRepository;
         $this->hotelRepository   = $hotelRepository;
@@ -131,8 +135,9 @@ class UserController extends BaseController
         $isHotel = $request->source ? true : false;
 
         if ($isHotel) {
-            $lastHotelId = Hotel::orderby('id','DESC')->first();
-            $request['hotelFormData'] = array_merge($request['hotelFormData'],
+            $lastHotelId = Hotel::orderby('id', 'DESC')->first();
+            $request['hotelFormData'] = array_merge(
+                $request['hotelFormData'],
                 [
                     'status'  => "active",
                     'country' => "Morocco",
@@ -144,10 +149,10 @@ class UserController extends BaseController
 
             if ($hotel) {
                 //Generate QR-Code For Hotel
-                $file = QrCode::format('png')->size(399)->color(40,40,40)->generate("https://appweb.hotellom.com/$hotel->id");
+                $file = QrCode::format('png')->size(399)->color(40, 40, 40)->generate("https://appweb.hotellom.com/$hotel->id");
                 //$imageName = 'hotel-'. $hotel->reference .'.png';
                 //Storage::disk('hotels')->put($imageName, $file);
-                $imageName = 'hotels/hotel-'. $hotel->reference .'.png';
+                $imageName = 'hotels/hotel-' . $hotel->reference . '.png';
                 Storage::disk('ftp')->put($imageName, $file);
                 // Add Hotel To Mesibo
                 $messiboUser = Http::get(env('MESIBO_APP_URL'), [
@@ -169,7 +174,7 @@ class UserController extends BaseController
                 $password = Str::random('8');
                 // Create User
                 $user = $this->userRepository->addUser($request->all(), $password);
-                if ($user){
+                if ($user) {
                     $user->hotel()->associate($hotel);
                     $user->assignRole(['admin']);
                     $user->givePermissionTo(Permission::DEFAULT_PERMISSIONS);
@@ -218,16 +223,13 @@ class UserController extends BaseController
                     if ($room['number']) {
                         $room = $this->roomRepository->addRoom($roomData);
 
-                        if($room){
+                        if ($room) {
 
                             $file = QrCode::format('png')->size(399)->color(40, 40, 40)->generate("https://appweb.hotellom.com/$hotel->id/$room->id");
-                            $imageName = 'rooms/room-' .$room['room_number'] .$room['qrcode'] .'.png';
+                            $imageName = 'rooms/room-' . $room['room_number'] . $room['qrcode'] . '.png';
                             Storage::disk('ftp')->put($imageName, $file);
                         }
-
-
                     }
-
                 }
 
                 //Create Licence
@@ -316,22 +318,22 @@ class UserController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        $user = $this->userRepository->updateUser($request,$id);
+        $user = $this->userRepository->updateUser($request, $id);
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
     public function linkUserWithHotel(Request $request)
     {
         $hotel = $this->hotelRepository->getHotelByCode(strtolower($request['code']));
-        if(!$hotel){
-            return $this->sendError('Error.', ['error'=>'Please Check Your Hotel Code']);
+        if (!$hotel) {
+            return $this->sendError('Error.', ['error' => 'Please Check Your Hotel Code']);
         } else {
 
             $request['hotel_id'] = $hotel->id;
             // Get Room By Room_Number
             $room = $this->roomRepository->getRoomByNumber($request);
-            if(!$room){
-                return $this->sendError('Error.', ['error'=>'The Room Number Does Not Exist']);
+            if (!$room) {
+                return $this->sendError('Error.', ['error' => 'The Room Number Does Not Exist']);
             } else {
                 // Link User With Hotel
                 $user = $this->userRepository->linkUserWithHotel($request);
@@ -340,7 +342,6 @@ class UserController extends BaseController
                 return response($success, Response::HTTP_CREATED);
             }
         }
-
     }
 
     /**
@@ -368,8 +369,7 @@ class UserController extends BaseController
         // $user->save();
         // //$this->userRepository->deleteUser($id);
         // return \response(null, Response::HTTP_NO_CONTENT);
-        if($user)
-        {
+        if ($user) {
             $user->delete();
             return response()->json([
                 'status' => 200,
@@ -385,15 +385,14 @@ class UserController extends BaseController
      */
     public function login(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
 
             return $this->sendResponse($success, 'User login successfully.');
-        }
-        else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        } else {
+            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
     }
 
@@ -414,7 +413,7 @@ class UserController extends BaseController
     {
         $password = Str::random('8');
         $role = $request['role'] == "0" ? "receptionist" : $request['role'];
-        $user = User::create(['name' => $request['name'],'email' => $request['email'],'password' => bcrypt($password),'etat' => $request['etat']]);
+        $user = User::create(['name' => $request['name'], 'email' => $request['email'], 'password' => bcrypt($password), 'etat' => $request['etat']]);
         $user->hotel_id = Auth::user()->hotel_id;
         $user->save();
         $user->assignRole([$role]);
@@ -427,7 +426,7 @@ class UserController extends BaseController
     public function addManager(UserRequest $request)
     {
         $password = Str::random('8');
-        $user = User::create(['name' => $request['name'],'email' => $request['email'],'password' => bcrypt($password),'etat' => 'active','is_manager' => 1]);
+        $user = User::create(['name' => $request['name'], 'email' => $request['email'], 'password' => bcrypt($password), 'etat' => 'active', 'is_manager' => 1]);
         $user->hotel_id = $request['hotel_id'];
         $user->save();
         $user->assignRole(["admin"]);
@@ -448,7 +447,7 @@ class UserController extends BaseController
         $user->etat = $request['etat'];
         $user->password = $request['password'] = bcrypt($user->password);;
         $user->save();
-        ModelHasRole::where('model_id',$request['user_id'])->delete();
+        ModelHasRole::where('model_id', $request['user_id'])->delete();
         ModelHasRole::create(['model_id' => $user->id, 'role_id' => $role, 'model_type' => 'App\Models\User']);
 
         return response(new UserResource($user), Response::HTTP_CREATED);
@@ -493,7 +492,7 @@ class UserController extends BaseController
     public function registerHotel(UserRequest $request)
     {
         $data = $request->all();
-        $lastHotelId = Hotel::orderby('id','DESC')->first();
+        $lastHotelId = Hotel::orderby('id', 'DESC')->first();
 
         $data = [
             'name' => $data['name'],
@@ -547,7 +546,7 @@ class UserController extends BaseController
                 'name' => $data['lastname'] . ' ' . $data['firstname'],
             ];
             $user = $this->userRepository->addUser($data, $password);
-            if ($user){
+            if ($user) {
                 $user->hotel()->associate($hotel);
                 $user->assignRole(['admin']);
                 $user->givePermissionTo(Permission::DEFAULT_PERMISSIONS);
@@ -578,16 +577,17 @@ class UserController extends BaseController
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
-    public function getActiveHotelUsers($role){
+    public function getActiveHotelUsers($role)
+    {
 
         $hotel_id = Auth::user()->hotel_id;
         $query = User::with('modelHasRole.role');
-        if ($role === 'room'){
-            $query->whereHas('modelHasRole.role', function($q){
+        if ($role === 'room') {
+            $query->whereHas('modelHasRole.role', function ($q) {
                 $q->where('name', Role::ROOMS_SERVANT);
             });
         } else {
-            $query->whereHas('modelHasRole.role', function($q){
+            $query->whereHas('modelHasRole.role', function ($q) {
                 $q->where('name', Role::RECEPTIONIST);
             });
         }
@@ -595,12 +595,14 @@ class UserController extends BaseController
         return UserApiResource::collection($users);
     }
 
-    public function getHotellomManagers(){
+    public function getHotellomManagers()
+    {
         $users = User::where('is_manager', 1)->get();
         return UserResource::collection($users);
     }
 
-    public function generateRandomString() {
+    public function generateRandomString()
+    {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
@@ -610,4 +612,22 @@ class UserController extends BaseController
         return $randomString;
     }
 
+    public function generatepdf($hotel_code, $ref)
+    {
+        // $options = new Options();
+        // $options->set('isRemoteEnabled', true);
+        // $pdf = new Dompdf($options);
+        //$pdf= PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdf',['hotel_code'=>$hotel_code,'reference'=>$ref])->stream();
+        //return view('pdf', ['hotel_code' => $hotel_code, 'reference' => $ref]);
+
+         $pdf = PDF::loadview('pdf', ['hotel_code' => $hotel_code, 'reference' => $ref]);
+         return $pdf->download('qrcodehotel.pdf');
+    }
+
+    public function generatepdfroom($hotel_code, $room_number, $qrcode)
+    {
+         $pdf = PDF::loadview('pdfroom', ['hotel_code' => $hotel_code, 'room_number' => $room_number, 'qrcode'=>$qrcode]);
+         return $pdf->download('qrcodehotel.pdf');
+        // return view('pdfroom', ['hotel_code' => $hotel_code, 'room_number' => $room_number, 'qrcode' => $qrcode]);
+    }
 }

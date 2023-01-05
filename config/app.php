@@ -185,7 +185,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -241,6 +241,7 @@ return [
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'Mailjet' => Mailjet\LaravelMailjet\Facades\Mailjet::class,
         'MesiboApi' => RKCreative\LaravelMesiboApi\LaravelMesiboApiFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 
