@@ -620,14 +620,14 @@ class UserController extends BaseController
         //$pdf= PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdf',['hotel_code'=>$hotel_code,'reference'=>$ref])->stream();
         //return view('pdf', ['hotel_code' => $hotel_code, 'reference' => $ref]);
 
-         $pdf = PDF::loadview('pdf', ['hotel_code' => $hotel_code, 'reference' => $ref]);
-         return $pdf->download('qrcodehotel.pdf');
+        $pdf = PDF::loadview('pdf', ['hotel_code' => $hotel_code, 'reference' => $ref]);
+        return $pdf->download('qrcodehotel.pdf');
     }
 
     public function generatepdfroom($hotel_code, $room_number, $qrcode)
     {
-         $pdf = PDF::loadview('pdfroom', ['hotel_code' => $hotel_code, 'room_number' => $room_number, 'qrcode'=>$qrcode]);
-         return $pdf->download('qrcodehotel.pdf');
+        $pdf = PDF::loadView('pdfroom', ['hotel_code' => $hotel_code, 'room_number' => $room_number, 'qrcode' => $qrcode]);
+        return $pdf->download('qrcodehotel.pdf');
         // return view('pdfroom', ['hotel_code' => $hotel_code, 'room_number' => $room_number, 'qrcode' => $qrcode]);
     }
 }
