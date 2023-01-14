@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ArticleRequest;
 use App\Http\Resources\ArticleResource;
+use App\Models\Article;
 use App\Models\Choice;
 use App\Models\Option;
 use App\Repositories\ArticleRepository;
@@ -11,6 +12,7 @@ use App\Repositories\ChoiceRepository;
 use App\Repositories\OptionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class ArticleController extends Controller
@@ -21,7 +23,7 @@ class ArticleController extends Controller
 
     private $choiceRepository;
 
-    public function __construct(ArticleRepository $articleRepository,OptionRepository $optionRepository,ChoiceRepository $choiceRepository)
+    public function __construct(ArticleRepository $articleRepository, OptionRepository $optionRepository, ChoiceRepository $choiceRepository)
     {
         $this->articleRepository   = $articleRepository;
         $this->optionRepository   = $optionRepository;
@@ -118,15 +120,12 @@ class ArticleController extends Controller
 
                         $this->choiceRepository->addChoice($choiceData);
                     }
-
                 } else {
                     // exception
                 }
-
             }
             return response(new ArticleResource($article), Response::HTTP_CREATED);
-        }
-        else{
+        } else {
             return response(new ArticleResource($article), Response::HTTP_CREATED);
         }
     }
@@ -195,10 +194,8 @@ class ArticleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $article = $this->articleRepository->updateArticle($request,$id);
+        $article = $this->articleRepository->updateArticle($request, $id);
         return response(new ArticleResource($article), Response::HTTP_CREATED);
-
-
     }
 
     /**
@@ -223,5 +220,37 @@ class ArticleController extends Controller
     {
         $this->articleRepository->deleteArticle($id);
         return  \response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function RoomServiceArticles(Request $request)
+    {
+        //$hotel_id = $request->query('hotel_id');
+        $hotel_id = Auth::user()->hotel_id;
+        $articles = Article::with('category')->whereHas('category', function ($q) use ($hotel_id) {
+            $q->where('hotel_id', $hotel_id)->whereHas('shop', function ($q) use ($hotel_id) {
+                $q->where('name', '=', 'Room Service');
+            });
+        });
+        if ($request->query('web')) {
+            return $articles->get();
+        } else {
+            return $articles->paginate(15);
+        }
+    }
+
+    public function SpaArticles(Request $request)
+    {
+        //$hotel_id = $request->query('hotel_id');
+        $hotel_id = Auth::user()->hotel_id;
+        $articles = Article::with('category')->whereHas('category', function ($q) use ($hotel_id) {
+            $q->where('hotel_id', $hotel_id)->whereHas('shop', function ($q) use ($hotel_id) {
+                $q->where('name', '=', 'Spa');
+            });
+        });
+        if ($request->query('web')) {
+            return $articles->get();
+        } else {
+            return $articles->paginate(15);
+        }
     }
 }

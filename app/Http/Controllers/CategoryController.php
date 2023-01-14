@@ -248,4 +248,30 @@ class CategoryController extends Controller
         $hotel_id = Auth::user()->hotel_id;
         return Category::with('shop')->where('hotel_id', $hotel_id)->where('shop_id', $shop_id)->get();
     }
+
+    public function roomservice_categories(Request $request)
+    {
+        $hotel_id = Auth::user()->hotel_id;
+        $category = Category::with('shop')->whereHas('shop', function($q) use($hotel_id) {
+            $q->where('hotel_id', $hotel_id)->where('name','=','Room Service');
+        });        
+        if($request->query('web')){
+            return $category->get();
+        } else {
+            return $category->paginate(50);
+        }
+    }
+
+    public function spa_categories(Request $request)
+    {
+        $hotel_id = Auth::user()->hotel_id;
+        $category = Category::with('shop')->whereHas('shop', function($q) use($hotel_id) {
+            $q->where('hotel_id', $hotel_id)->where('name','=','Spa');
+        });        
+        if($request->query('web')){
+            return $category->get();
+        } else {
+            return $category->paginate(50);
+        }
+    }
 }
