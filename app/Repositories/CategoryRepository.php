@@ -24,10 +24,13 @@ class CategoryRepository
      */
     public function getCategories($request){
         $hotel_id = Auth::user()->hotel_id;
+        $category = Category::with('shop')->whereHas('shop', function($q) use($hotel_id) {
+            $q->where('hotel_id', $hotel_id)->where('name','!=','Room Service')->where('name','!=','Spa')->orderBy('sequence', 'DESC');
+        });        
         if($request->query('web')){
-            return Category::with('shop')->where('hotel_id', $hotel_id)->OrderBy('sequence','DESC')->get();
+            return $category->get();
         } else {
-            return Category::with('shop')->where('hotel_id', $hotel_id)->OrderBy('sequence','ASC')->paginate(50);
+            return $category->paginate(50);
         }
 
     }

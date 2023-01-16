@@ -30,6 +30,7 @@ use App\Http\Controllers\BlockController;
 use App\Http\Controllers\DemmandUserController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RequestHotelController;
+use App\Models\ArticleCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -113,7 +114,13 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::delete('users/{id}',[UserController::class,'destroy']);
     Route::get('categories_by_shop/{shop_id}',[CategoryController::class,'categories_by_shop']);
 
-
+    Route::get('roomservice_categories/',[CategoryController::class,'roomservice_categories']);
+    Route::get('spa_categories/',[CategoryController::class,'spa_categories']);
+    Route::get('RoomServiceShops/',[ShopController::class,'RoomServiceShops']);
+    Route::get('SpaShops/',[ShopController::class,'SpaShops']);
+    Route::get('RoomServiceArticles',[ArticleController::class,'RoomServiceArticles']);
+    Route::get('SpaArticles',[ArticleController::class,'SpaArticles']);
+    
     Route::put('linkUserWithHotel', [UserController::class , 'linkUserWithHotel']);
 
     Route::put('update/profile', [UserController::class, 'updateProfile']);
