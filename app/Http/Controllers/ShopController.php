@@ -7,6 +7,7 @@ use App\Http\Resources\ShopResource;
 use App\Models\Shop;
 use App\Repositories\ShopRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class ShopController extends Controller
@@ -225,5 +226,16 @@ class ShopController extends Controller
     {
         $this->shopRepository->deleteShop($id);
         return \response(null, Response::HTTP_NO_CONTENT);
+    }
+    public function RoomServiceShops()
+    {
+        $hotel_id = Auth::user()->hotel_id;
+        return Shop::with('type')->where('hotel_id', $hotel_id)->where('name','Room Service')->first();
+    }
+
+    public function SpaShops()
+    {
+        $hotel_id = Auth::user()->hotel_id;
+        return Shop::with('type')->where('hotel_id', $hotel_id)->where('name','Spa')->first();
     }
 }

@@ -37,7 +37,9 @@ class ArticleRepository
         //$hotel_id = $request->query('hotel_id');
         $hotel_id = Auth::user()->hotel_id;
         $articles = Article::with('category')->whereHas('category', function($q) use($hotel_id) {
-            $q->where('hotel_id', $hotel_id);
+            $q->where('hotel_id', $hotel_id)->whereHas('shop', function($q) use($hotel_id) {
+                $q->where('name','!=', 'Room Service')->where('name','!=', 'Spa');
+            });
         });
         if($request->query('web')){
             return $articles->get();
