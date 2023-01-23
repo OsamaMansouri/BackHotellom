@@ -32,38 +32,38 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'storage',
+            //'root' => storage_path('app/public'),
+            //'url' => env('APP_URL').'storage',
             'visibility' => 'public',
-            /* 'root' => storage_path('app'),
-            'url' => env('APP_URL').'/img', */
+            'root' => storage_path('app'),
+            'url' => env('APP_URL').'/img',
         ],
 
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'storage',
+            'url' => env('APP_URL').'img',
             'visibility' => 'public',
         ],
 
         'categories' => [
             'driver' => 'local',
             'root' => storage_path('app/public/categories'),
-            'url' => env('APP_URL').'storage',
+            'url' => env('APP_URL').'img',
             'visibility' => 'public',
         ],
 
         'articles' => [
             'driver' => 'local',
             'root' => storage_path('app/public/articles'),
-            'url' => env('APP_URL').'storage',
+            'url' => env('APP_URL').'img',
             'visibility' => 'public',
         ],
 
         'types' => [
             'driver' => 'local',
             'root' => storage_path('app/public/types'),
-            'url' => env('APP_URL').'storage',
+            'url' => env('APP_URL').'img',
             'visibility' => 'public',
         ],
 
