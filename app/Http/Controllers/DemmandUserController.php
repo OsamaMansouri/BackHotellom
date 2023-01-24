@@ -28,6 +28,7 @@ class DemmandUserController extends Controller
                         ->join('request_hotels','request_hotels.demmand_id','=','demmands.id')
                         ->where('request_hotels.hotel_id',$hotel_id)
                         ->orderBy('demmand_users.id', 'DESC'); */
+
         $demmandUsers = DemmandUser::select('demmand_users.id','demmands.name','demmands.icon','demmand_users.message','demmand_users.status','demmand_users.demmand_id','demmand_users.option_id','demmand_users.user_id','demmand_users.room_id','demmand_users.done_by','demmand_users.created_at','demmand_users.updated_at')
                         ->join('demmands','demmands.id','=','demmand_users.demmand_id')
                         ->join('rooms','rooms.id','=','demmand_users.room_id')
