@@ -425,7 +425,7 @@ class UserController extends BaseController
 
     public function addManager(UserRequest $request)
     {
-        $password = Str::random('8');
+        $password = $request['password'];
         $user = User::create(['name' => $request['name'], 'email' => $request['email'], 'password' => bcrypt($password), 'etat' => 'active', 'is_manager' => 1]);
         $user->hotel_id = $request['hotel_id'];
         $user->save();
@@ -437,6 +437,22 @@ class UserController extends BaseController
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
+
+    public function updateManager(Request $request)
+    {
+        $user = User::find($request['user_id']);
+        $password = $request['password'];
+        $user->password = bcrypt($request['password']);
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $user->etat = $request['etat'];
+        $user->is_manager=1;
+        $user->save();
+
+        UserPassHasBeenUpdatedEvent::dispatch($user, $password);
+
+        return response(new UserResource($user), Response::HTTP_CREATED);
+    }
 
     public function updateStaff(Request $request)
     {
