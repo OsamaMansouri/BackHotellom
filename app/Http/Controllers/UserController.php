@@ -441,11 +441,11 @@ class UserController extends BaseController
     public function updateStaff(Request $request)
     {
         $user = User::find($request['user_id']);
-        $role = $request['role'] == "" ? "4" : $request['role'];
+        $role = $request['role'] == "0" ? "4" : $request['role'];
         $user->name = $request['name'];
         $user->email = $request['email'];
         $user->etat = $request['etat'];
-        $user->password = $request['password'] = bcrypt($user->password);;
+        $user->password = bcrypt($request['password']);
         $user->save();
         ModelHasRole::where('model_id', $request['user_id'])->delete();
         ModelHasRole::create(['model_id' => $user->id, 'role_id' => $role, 'model_type' => 'App\Models\User']);
@@ -471,10 +471,11 @@ class UserController extends BaseController
     {
         $user = User::find($request['user_id']);
         $password = Str::random('8');
-        $user->password = $password;
+        $user->password = bcrypt($password);
         $user->save();
 
-        UserPassHasBeenUpdatedEvent::dispatch($user, $password);
+
+        UserPassHasBeenUpdatedEvent::dispatch($user,$password);
 
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
