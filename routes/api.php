@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('users/resetPassword', [UserController::class, 'resetPassStaff']);
     Route::get('users/managers', [UserController::class, 'getHotellomManagers']);
     Route::post('manager/add', [UserController::class, 'addManager']);
+    Route::put('manager/update',[UserController::class, 'updateManager']);
     Route::delete('users/{id}',[UserController::class,'destroy']);
     Route::get('categories_by_shop/{shop_id}',[CategoryController::class,'categories_by_shop']);
 
