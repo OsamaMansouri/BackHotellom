@@ -411,7 +411,7 @@ class UserController extends BaseController
 
     public function addStaff(UserRequest $request)
     {
-        $password = Str::random('8');
+        $password = $request['password'];
         $role = $request['role'] == "0" ? "receptionist" : $request['role'];
         $user = User::create(['name' => $request['name'], 'email' => $request['email'], 'password' => bcrypt($password), 'etat' => $request['etat']]);
         $user->hotel_id = Auth::user()->hotel_id;
@@ -441,7 +441,7 @@ class UserController extends BaseController
     public function updateStaff(Request $request)
     {
         $user = User::find($request['user_id']);
-        $role = $request['role'] == "0" ? "4" : $request['role'];
+        $role = $request['role'] == "" ? "4" : $request['role'];
         $user->name = $request['name'];
         $user->email = $request['email'];
         $user->etat = $request['etat'];
