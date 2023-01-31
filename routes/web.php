@@ -99,6 +99,7 @@ Route::get('/vigon/{id}/delete', function ($id) {
 Route::get('pdfhotel/{code}/{ref}/{name}',[UserController::class,'generatepdf']);
 Route::get('pdfroom/{hotel_code}/{room_number}/{qrcode}',[UserController::class,'generatepdfroom']);
 
+
 Route::post('/hotellom/form/update/{id}', [ClientController::class, 'update'])->name('updateHotellom');
 Route::post('/hotellom/form', [ClientController::class, 'store'])->name('hotellom');
 
