@@ -478,6 +478,7 @@ class UserController extends BaseController
         $user->name = $request['firstname'] . ' ' . $request['lastname'];
         $user->email = $request['email'];
         $user->phone_number = $request['phone_number'];
+        $user->password = bcrypt($request['password']);
         $user->save();
 
         return response(new UserResource($user), Response::HTTP_CREATED);
