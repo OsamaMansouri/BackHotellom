@@ -11,6 +11,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use PDF;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 
 class DemmandUserController extends Controller
 {
@@ -29,18 +32,51 @@ class DemmandUserController extends Controller
                         ->where('request_hotels.hotel_id',$hotel_id)
                         ->orderBy('demmand_users.id', 'DESC'); */
 
-        $demmandUsers = DemmandUser::select('demmand_users.id','demmands.name','demmands.icon','demmand_users.message','demmand_users.status','demmand_users.demmand_id','demmand_users.option_id','demmand_users.user_id','demmand_users.room_id','demmand_users.done_by','demmand_users.created_at','demmand_users.updated_at')
-                        ->join('demmands','demmands.id','=','demmand_users.demmand_id')
-                        ->join('rooms','rooms.id','=','demmand_users.room_id')
-                        ->where('rooms.hotel_id',$hotel_id)
-                        ->orderBy('demmand_users.id', 'DESC');
+        $demmandUsers = DemmandUser::select('demmand_users.id', 'demmands.name', 'demmands.icon', 'demmand_users.message', 'demmand_users.status', 'demmand_users.demmand_id', 'demmand_users.option_id', 'demmand_users.user_id', 'demmand_users.room_id', 'demmand_users.done_by', 'demmand_users.created_at', 'demmand_users.updated_at')
+            ->join('demmands', 'demmands.id', '=', 'demmand_users.demmand_id')
+            ->join('rooms', 'rooms.id', '=', 'demmand_users.room_id')
+            ->where('rooms.hotel_id', $hotel_id)
+            ->orderBy('demmand_users.id', 'DESC');
 
 
-        if($request->query('web')){
+        if ($request->query('web')) {
             return DemmandUserResource::collection($demmandUsers->get());
-        }else{
+        } else {
             return DemmandUserResource::collection($demmandUsers->paginate());
         }
+    }
+
+    public function DemmandUserReport($status, $message, $user_name, $room_number, $demmand_name, $demmand_option, $created_at, $updated_at, $done_by)
+    {
+
+        $days  = Carbon::parse($created_at)->diffInDays(Carbon::parse($updated_at));
+        $hours   = Carbon::parse($created_at)->diffInHours(Carbon::parse($updated_at));
+        $minutes   = Carbon::parse($created_at)->diffInMinutes(Carbon::parse($updated_at));
+        $difftime = CarbonInterval::days($days)->hours($hours)->minutes($minutes)->forHumans();
+
+        $created_at_time =  date('Y-m-d H:i:s', strtotime($created_at));
+        $updated_at_time =  date('Y-m-d H:i:s', strtotime($updated_at));
+
+        if ($updated_at_time == $created_at_time) {
+            $updated_at_time = 'pending';
+        }
+        if ($difftime == '1 second') {
+            $difftime = 'pending';
+        }
+
+        $pdf = PDF::loadview('DemmandUserReport',compact(
+            'status',
+            'message',
+            'user_name',
+            'room_number',
+            'demmand_name',
+            'created_at_time',
+            'updated_at_time',
+            'done_by',
+            'demmand_option',
+            'difftime'
+        ));
+        return $pdf->download('DemmandUserReport.pdf');
     }
 
     /**
@@ -64,7 +100,7 @@ class DemmandUserController extends Controller
         $request['user_id'] = Auth::user()->id;
         $demmand = DemmandUser::create(
             $request->only('message', 'user_id', 'demmand_id', 'option_id', 'room_id')
-            + ['status' => 'pending']
+                + ['status' => 'pending']
         );
 
         $this->sendNotif(Auth::user()->hotel_id, $request['user_id'], $request['room_id']);
@@ -125,12 +161,12 @@ class DemmandUserController extends Controller
         $client = User::find($user);
         $room = Room::find($room);
         $users = User::with('modelHasRole.role')
-                        ->whereHas('modelHasRole.role', function($q){
-                                $q->where('name', Role::RECEPTIONIST)->orwhere('name', Role::HOUSEKEEPING);
-                            })
-                        ->where('hotel_id', $hotel_id)
-                        ->where('connected', 1)
-                        ->pluck('deviceToken');
+            ->whereHas('modelHasRole.role', function ($q) {
+                $q->where('name', Role::RECEPTIONIST)->orwhere('name', Role::HOUSEKEEPING);
+            })
+            ->where('hotel_id', $hotel_id)
+            ->where('connected', 1)
+            ->pluck('deviceToken');
 
         $notif = array(
             "title" => "New Request",
@@ -143,7 +179,7 @@ class DemmandUserController extends Controller
 
         $apiKey = env('FIREBASE_API_KEY');
 
-        $fields = json_encode(array('registration_ids'=> $users, 'notification'=>$notif, 'data'=>$data));
+        $fields = json_encode(array('registration_ids' => $users, 'notification' => $notif, 'data' => $data));
 
         $ch = curl_init();
 
@@ -153,7 +189,7 @@ class DemmandUserController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, ($fields));
 
         $headers = array();
-        $headers[] = 'Authorization: key='. $apiKey;
+        $headers[] = 'Authorization: key=' . $apiKey;
         $headers[] = 'Content-Type: application/json';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 

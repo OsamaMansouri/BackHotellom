@@ -24,7 +24,9 @@ class DemmandUserResource extends JsonResource
             'option' => new DemmandOptionResource(DemmandOption::find($this->option_id)),
             'user' => new UserApiResource($this->user),
             'room' => new RoomResource($this->room),
-            'done_by' => new UserApiResource(User::find($this->done_by))
+            'done_by' => new UserApiResource(User::find($this->done_by)),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

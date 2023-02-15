@@ -26,6 +26,24 @@ class Permission extends Model
         'ClientsDemmands'
     ];
 
+    const manager_Rooms_service = [
+        'Articles',
+        'Categories',
+        'Prolongations',
+        'Commandes',
+        'Paiments',
+        'Add_Prolongations',
+        'Shops',
+        'GeneralSettings',
+        'Offers',
+        'Dashboards',
+        'ClientsDemmands'
+    ];
+    const manager_housekeeping = [
+        'Dashboards',
+        'ClientsDemmands',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

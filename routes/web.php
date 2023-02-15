@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DemmandUserController;
 use App\Http\Controllers\UserController;
 use App\Models\Client;
 
@@ -96,9 +97,12 @@ Route::get('/vigon/{id}/delete', function ($id) {
     $clients = Client::where('type', 'vigon')->orderBy('id', 'DESC')->get();
     return view("listVigon", compact('clients'));
 });
+
 Route::get('pdfhotel/{code}/{ref}/{name}',[UserController::class,'generatepdf']);
 Route::get('pdfroom/{hotel_code}/{room_number}/{qrcode}',[UserController::class,'generatepdfroom']);
 
+$var = "demmanduserreport/{status}/{message}/{user_name}/{room_number}/{demmand_name}/{demmand_option}/{created_at}/{updated_at}/{done_by}";
+Route::get($var,[DemmandUserController::class,'DemmandUserReport']);
 
 Route::post('/hotellom/form/update/{id}', [ClientController::class, 'update'])->name('updateHotellom');
 Route::post('/hotellom/form', [ClientController::class, 'store'])->name('hotellom');
