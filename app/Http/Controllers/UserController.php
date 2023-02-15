@@ -418,6 +418,18 @@ class UserController extends BaseController
         $user->save();
         $user->assignRole([$role]);
 
+        if($request['role'] == 'super_manager')
+        {
+            if($request['departement'] == 'housekeeping')
+            {
+                $user->givePermissionTo(Permission::manager_housekeeping);
+            }
+            if($request['departement'] == 'rooms-servant')
+            {
+                $user->givePermissionTo(Permission::manager_Rooms_service);
+            }
+        }
+
         UserHasBeenAddedEvent::dispatch($user, $password);
 
         return response(new UserResource($user), Response::HTTP_CREATED);

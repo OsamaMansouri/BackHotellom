@@ -21,8 +21,11 @@ class DemmandUser extends Model
         'user_id',
         'option_id',
         'room_id',
-        'done_by'
+        'done_by',
+        'created_at',
+        'updated_at'
     ];
+    public $timestamps = true;
 
     public function demmand()
     {
