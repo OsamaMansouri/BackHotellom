@@ -418,7 +418,7 @@ class UserController extends BaseController
         $user->save();
         $user->assignRole([$role]);
 
-        if($request['role'] == 'super_manager')
+        if($request['role'] == 'manager')
         {
             if($request['departement'] == 'housekeeping')
             {

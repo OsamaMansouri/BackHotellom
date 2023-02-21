@@ -46,37 +46,16 @@ class DemmandUserController extends Controller
         }
     }
 
-    public function DemmandUserReport($status, $message, $user_name, $room_number, $demmand_name, $demmand_option, $created_at, $updated_at, $done_by)
+    public function getreport($datefrom, $dateto,$hotel_id)
     {
 
-        $days  = Carbon::parse($created_at)->diffInDays(Carbon::parse($updated_at));
-        $hours   = Carbon::parse($created_at)->diffInHours(Carbon::parse($updated_at));
-        $minutes   = Carbon::parse($created_at)->diffInMinutes(Carbon::parse($updated_at));
-        $difftime = CarbonInterval::days($days)->hours($hours)->minutes($minutes)->forHumans();
+        $demmandUsers = DemmandUser::select('demmand_users.id', 'demmands.name', 'demmands.icon', 'demmand_users.message', 'demmand_users.status', 'demmand_users.demmand_id', 'demmand_users.option_id', 'demmand_users.user_id', 'demmand_users.room_id', 'demmand_users.done_by', 'demmand_users.created_at', 'demmand_users.updated_at')
+            ->join('demmands', 'demmands.id', '=', 'demmand_users.demmand_id')
+            ->join('rooms', 'rooms.id', '=', 'demmand_users.room_id')
+            ->where('rooms.hotel_id', $hotel_id)
+            ->whereBetween('demmand_users.created_at', [$datefrom, $dateto]);
 
-        $created_at_time =  date('Y-m-d H:i:s', strtotime($created_at));
-        $updated_at_time =  date('Y-m-d H:i:s', strtotime($updated_at));
-
-        if ($updated_at_time == $created_at_time) {
-            $updated_at_time = 'pending';
-        }
-        if ($difftime == '1 second') {
-            $difftime = 'pending';
-        }
-
-        $pdf = PDF::loadview('DemmandUserReport',compact(
-            'status',
-            'message',
-            'user_name',
-            'room_number',
-            'demmand_name',
-            'created_at_time',
-            'updated_at_time',
-            'done_by',
-            'demmand_option',
-            'difftime'
-        ));
-        return $pdf->download('DemmandUserReport.pdf');
+        return DemmandUserResource::collection($demmandUsers->get());
     }
 
     /**
