@@ -72,6 +72,7 @@ Route::delete('users/{id}',  [UserController::class, 'destroy']);
 Route::get('/reset-password', [BaseController::class, 'sendLink'])->name('sendLink');
 Route::get('/edit-password/{id}', [BaseController::class, 'editPassword'])->name('editPassword');
 Route::post('/updatePassword', [BaseController::class, 'updatePassword'])->name('updatePassword');
+Route::get('/getreport/{datefrom}/{dateto}/{hotel_id}', [DemmandUserController::class, 'getreport']);
 
 /*Route::post('login', [\Laravel\Passport\Http\Controllers\AccessTokenController::class, 'issueToken'])
 ->middleware(['api-login', 'throttle']);*/

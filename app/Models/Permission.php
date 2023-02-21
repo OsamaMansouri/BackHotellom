@@ -12,6 +12,8 @@ class Permission extends Model
     const DEFAULT_PERMISSIONS = [
         'Articles',
         'Categories',
+        'RoomService',
+        'SPA',
         'Prolongations',
         'Commandes',
         'Paiments',
@@ -28,20 +30,21 @@ class Permission extends Model
 
     const manager_Rooms_service = [
         'Articles',
-        'Categories',
-        'Prolongations',
+        'RoomService',
         'Commandes',
+        'Prolongations',
+        'Categories',
         'Paiments',
         'Add_Prolongations',
         'Shops',
         'GeneralSettings',
         'Offers',
         'Dashboards',
-        'ClientsDemmands'
     ];
     const manager_housekeeping = [
         'Dashboards',
         'ClientsDemmands',
+        
     ];
 
     /**
