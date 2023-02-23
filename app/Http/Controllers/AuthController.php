@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 use App\Events\ActiveClientsEvent;
 use App\Models\Role;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -104,13 +105,12 @@ class AuthController extends BaseController
                 'password' => 'required|string|min:6'
                 //'password' => 'required|string|min:6|confirmed',
             ]);
-            if ($validator->fails())
-            {
-                return response(['errors'=>$validator->errors()->all()], 422);
+            if ($validator->fails()) {
+                return response(['errors' => $validator->errors()->all()], 422);
             }
         }
 
-        if(in_array($provider, ['facebook', 'google', 'twitter'])) {
+        if (in_array($provider, ['facebook', 'google', 'twitter'])) {
 
             $userSoc = User::whereSocialId($data['socialID'])->first();
             if (!$userSoc) {
@@ -124,7 +124,7 @@ class AuthController extends BaseController
                     'avatar' => $data['avatar']
                 ];
                 $user = User::create($data);
-               /*  $user->hotel_id = 2;
+                /*  $user->hotel_id = 2;
                 $user->save(); */
                 // Event/Listener To Notify Hotel Admin About New Client Registration And Add The New Client To Mesibo API
                 UserHasRegistredEvent::dispatch($user);
@@ -148,7 +148,7 @@ class AuthController extends BaseController
         }
 
         $userExist = User::whereEmail($data['email'])->first();
-        if(!$userExist) {
+        if (!$userExist) {
             $user = User::create($data);
             /* $user->hotel_id = 2;
             $user->save(); */
@@ -162,10 +162,32 @@ class AuthController extends BaseController
                 $success['user'] =  new UserResource($user);
                 return $this->sendResponse($success, 'User register successfully.');
             }
-            return $this->sendError('Server error.', ['error'=>'User not created']);
+            return $this->sendError('Server error.', ['error' => 'User not created']);
+        } else {
+            return $this->sendError('Server error.', ['error' => 'User already exists']);
+        }
+    }
 
-        }else {
-            return $this->sendError('Server error.', ['error'=>'User already exists']);
+    public function registerQrd(Request $request)
+    {
+        $password = Str::random(8);
+        $name = substr(str_shuffle("qwertyuiopasdfghjklzxcvbnm"), 0, 6);
+        $user = User::create([
+            'firstname' => $name,
+            'lastname' => $name,
+            "email" => $name . '@gmail.com',
+            'password' => Hash::make($password),
+        ]);
+
+        if ($user) {
+            // Event/Listener To Notify Hotel Admin About New Client Registration And Add The New Client To Mesibo API
+            UserHasRegistredEvent::dispatch($user);
+            Log::channel('users')->info('new user has being added');
+            $user->assignRole(['client']);
+            $success['token'] = $user->createToken('MyApp')->accessToken;
+            $success['name'] = 'unknown';
+            $success['user'] =  new UserResource($user);
+            return $this->sendResponse($success, 'User register successfully.');
         }
     }
 
@@ -179,7 +201,7 @@ class AuthController extends BaseController
         $data = $request->all();
         $provider = isset($data['source']) ? $data['source'] : false;
 
-        if(in_array($provider, ['facebook', 'google', 'twitter'])) {
+        if (in_array($provider, ['facebook', 'google', 'twitter'])) {
             $user = User::whereSocialId($data['socialID'])->first();
             if ($user) {
                 $success['token'] = $user->createToken('MyApp')->accessToken;
@@ -188,7 +210,7 @@ class AuthController extends BaseController
                 return $this->sendResponse($success, 'Utilisateur est .');
             } else {
                 $userExist = User::whereEmail($data['email'])->first();
-                if(!$userExist) {
+                if (!$userExist) {
                     $data = [
                         'firstname' => $data['lastname'],
                         'lastname' => $data['firstname'],
@@ -209,10 +231,9 @@ class AuthController extends BaseController
                         $success['user'] =  new UserResource($user);
                         return $this->sendResponse($success, 'User register successfully.');
                     }
-                    return $this->sendError('Server error.', ['error'=>'User not created']);
-
-                }else {
-                    return $this->sendError('Server error.', ['error'=>'User already exists']);
+                    return $this->sendError('Server error.', ['error' => 'User not created']);
+                } else {
+                    return $this->sendError('Server error.', ['error' => 'User already exists']);
                 }
             }
         }
@@ -223,14 +244,14 @@ class AuthController extends BaseController
         ]);
 
         // If User Login Successfully
-        if(Auth::attempt($loginData)){
+        if (Auth::attempt($loginData)) {
             $user = new UserResource(User::find(Auth::id()));
 
             //event(new ActiveClientsEvent($user['hotel_id']));
 
             $user['ability'] = [
-                 'action' => 'manage',
-                 'subject' => 'all',
+                'action' => 'manage',
+                'subject' => 'all',
             ];
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
@@ -239,11 +260,11 @@ class AuthController extends BaseController
             return $this->sendResponse($success, 'User login successfully.');
         }
 
-        return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-
+        return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
     }
 
-    public function loginStandar(Request $request){
+    public function loginStandar(Request $request)
+    {
 
         $loginData = $request->validate([
             'email' => 'email|required',
@@ -252,14 +273,14 @@ class AuthController extends BaseController
 
         // If User Login Successfully
         $user = User::with('modelHasRole.role')
-                        ->whereHas('modelHasRole.role', function($q){
-                                $q->where('name', Role::ROOMS_SERVANT)->orWhere('name', Role::RECEPTIONIST)->orWhere('name', Role::HOUSEKEEPING)->orWhere('name', Role::MANAGER);
-                            })
-                        ->where('email', $request->email)
-                        ->first();
+            ->whereHas('modelHasRole.role', function ($q) {
+                $q->where('name', Role::ROOMS_SERVANT)->orWhere('name', Role::RECEPTIONIST)->orWhere('name', Role::HOUSEKEEPING)->orWhere('name', Role::MANAGER);
+            })
+            ->where('email', $request->email)
+            ->first();
 
-        if($user){
-            if(Hash::check($request->password, $user->password)){
+        if ($user) {
+            if (Hash::check($request->password, $user->password)) {
                 $user->update(['connected' => 1]);
                 $user = new UserResource(User::find($user->id));
 
@@ -271,22 +292,23 @@ class AuthController extends BaseController
             }
         }
 
-        return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
     }
 
-    public function logoutStandar(){
+    public function logoutStandar()
+    {
 
         $user = Auth::user();
-        $user->tokens->each(function($token, $key) {
+        $user->tokens->each(function ($token, $key) {
             $token->delete();
         });
         $user = User::find($user->id);
         $user->update(["connected" => 0]);
-        if($user){
+        if ($user) {
             return $this->sendResponse("True", 'User logout successfully.');
         }
 
-        return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
     }
 
     public function registerOld(Request $request)
@@ -303,7 +325,7 @@ class AuthController extends BaseController
         }
 
         // facebook callback
-        if($resource == 'facebook'){
+        if ($resource == 'facebook') {
             $userProfile = $this->facebookCallback($token);
             $user = User::whereSocialId($userProfile->id)->first();
             if (!$user) {
@@ -313,7 +335,7 @@ class AuthController extends BaseController
                 $username = [
                     'firstname' => $firstname,
                     'lastname' => $lastname
-                ] ;
+                ];
                 $data = [
                     'firstname' => $firstname,
                     'lastname' => $lastname,
@@ -331,10 +353,9 @@ class AuthController extends BaseController
 
                 return $this->sendResponse($success, 'User login successfully.');
             }
-
         }
         // google callback
-        if($resource == 'google') {
+        if ($resource == 'google') {
             //$userProfile = $this->googleCallBack($token);
             $social_id = '';
             $social_id = $data['social_id'];
@@ -361,17 +382,16 @@ class AuthController extends BaseController
 
                 return $this->sendResponse($success, 'User login successfully.');
             }
-
         }
         // twitter callback
-        if($resource == 'twitter') {
+        if ($resource == 'twitter') {
             $userProfile = $this->twitterCallBack($token, $secret);
             //dd($userProfile);
             $user = User::whereSocialId($userProfile->id)->first();
             if (!$user) {
                 $firstname = '';
                 $lastname = '';
-                if(preg_match('/\s/',$userProfile->name)){
+                if (preg_match('/\s/', $userProfile->name)) {
                     $fullname = explode(' ', $userProfile->name);
                     $firstname = $fullname[0];
                     $lastname = $fullname[1];
@@ -380,7 +400,7 @@ class AuthController extends BaseController
                 $username = [
                     'firstname' => $firstname,
                     'lastname' => $lastname
-                ] ;
+                ];
                 $data = [
                     'firstname' => $firstname,
                     'lastname' => $lastname,
@@ -398,11 +418,10 @@ class AuthController extends BaseController
 
                 return $this->sendResponse($success, 'User login successfully.');
             }
-
         }
 
         $userTest = User::whereEmail($data['email'])->first();
-        if(!$userTest){
+        if (!$userTest) {
             $user = User::create($data);
             if ($user) {
                 // Event/Listener To Notify Hotel Admin About New Client Registration And Add The New Client To Mesibo API
@@ -414,9 +433,9 @@ class AuthController extends BaseController
                 $success['user'] =  $user;
                 return $this->sendResponse($success, 'User register successfully.');
             }
-            return $this->sendError('Server error.', ['error'=>'Server error']);
-        }else{
-            return $this->sendError('Server error.', ['error'=>'User Already Exists']);
+            return $this->sendError('Server error.', ['error' => 'Server error']);
+        } else {
+            return $this->sendError('Server error.', ['error' => 'User Already Exists']);
         }
     }
 
@@ -425,7 +444,8 @@ class AuthController extends BaseController
      * @param $token
      * @return \Illuminate\Http\Response
      */
-    public function facebookCallback($token){
+    public function facebookCallback($token)
+    {
 
         $profile = Socialite::driver('facebook')->userFromToken($token);
         return $profile;
@@ -436,11 +456,11 @@ class AuthController extends BaseController
      * @param $token
      * @return \Illuminate\Http\Response
      */
-    public function googleCallBack($token){
+    public function googleCallBack($token)
+    {
 
         $profile =  Socialite::driver('google')->userFromToken($token);
         return $profile;
-
     }
 
     /**
@@ -448,11 +468,11 @@ class AuthController extends BaseController
      * @param $token
      * @return \Illuminate\Http\Response
      */
-    public function githubCallBack($token){
+    public function githubCallBack($token)
+    {
 
         $profile = Socialite::driver('github')->userFromToken($token);
         return $profile;
-
     }
     /**
      * Get user data from twitter callback
@@ -460,10 +480,10 @@ class AuthController extends BaseController
      * @param $secret
      * @return \Illuminate\Http\Response
      */
-    public function twitterCallBack($token, $secret){
+    public function twitterCallBack($token, $secret)
+    {
 
         $profile = Socialite::driver('twitter')->userFromTokenAndSecret($token, $secret);
         return $profile;
-
     }
 }

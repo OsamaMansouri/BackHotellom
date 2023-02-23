@@ -63,6 +63,7 @@ Route::get('twitter/callback', [AuthController::class, 'twitterCallBack']);
 
 
 Route::post('register', [AuthController::class, 'register']);
+Route::post('registerQrd', [AuthController::class, 'registerQrd']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('loginStandar', [AuthController::class, 'loginStandar']);
 Route::post('payment',  [PaymentController::class, 'payment'])->name('payment');
